@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Picks</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <h1>Pick Your NFL Team</h1>
+    <form id="pickForm">
+        <label for="week">Week:</label>
+        <input type="number" id="week" name="week" min="1" max="17" required><br>
+        
+        <label for="team">Team:</label>
+        <select id="team" name="team" required>
+            <!-- Options will be populated by JavaScript -->
+        </select><br>
+        
+        <button type="submit">Submit Pick</button>
+    </form>
+    
+    <script>
+        fetch('/api/teams')
+            .then(response => response.json())
+            .then(teams => {
+                const teamSelect = document.getElementById('team');
+                teams.forEach(team => {
+                    const option = document.createElement('option');
+                    option.value = team;
+                    option.text = team;
+                    teamSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error fetching teams:', error));
+
+        document.getElementById('pickForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const week = document.getElementById('week').value;
+            const team = document.getElementById('team').value;
+            
+            fetch('/api/pick', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ week, team })
+            })
+            .then(response => response.text())
+            .then(message => alert(message))
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

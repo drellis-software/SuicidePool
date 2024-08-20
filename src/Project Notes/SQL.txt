@@ -1,0 +1,9 @@
+If this query returns any results, the user has already picked that team and should not be allowed to pick it again.
+
+SELECT * FROM picks
+WHERE user_id = @userId AND team_id = @teamId;
+
+When a user tries to make a pick
+
+INSERT INTO picks (user_id, team_id, week_number)
+VALUES (@userId, @teamId, @weekNumber);
